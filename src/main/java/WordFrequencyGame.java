@@ -8,33 +8,30 @@ public class WordFrequencyGame {
     public static final String CALCULATE_ERROR_MESSAGE = "Calculate Error";
 
     public String getResult(String inputSentence) {
-        if (inputSentence.split(SPACE_REGEX).length == 1) {
-            return inputSentence + SINGLE_WORD_SUFFIX;
-        } else {
-            try {
-                //split the input string with 1 to n pieces of spaces
-                List<WordFrequency> wordFrequencyList = new ArrayList<>();
-                for (String inputWord : inputSentence.split(SPACE_REGEX)) {
-                    WordFrequency wordFrequency = new WordFrequency(inputWord, 1);
-                    wordFrequencyList.add(wordFrequency);
-                }
-
-                //sizing the same word
-                List<WordFrequency> uniqueWordFrequencyList = new ArrayList<>();
-                for (Map.Entry<String, List<WordFrequency>> entry : getWordFrequencyMap(wordFrequencyList).entrySet()) {
-                    uniqueWordFrequencyList.add(new WordFrequency(entry.getKey(), entry.getValue().size()));
-                }
-                uniqueWordFrequencyList.sort((word1, word2) -> word2.getCount() - word1.getCount());
-
-                StringJoiner resultJoiner = new StringJoiner(NEW_LINE_DELIMITER);
-                for (WordFrequency word : uniqueWordFrequencyList) {
-                    resultJoiner.add(word.getWord() + " " + word.getCount());
-                }
-                return resultJoiner.toString();
-            } catch (Exception exception) {
-                return CALCULATE_ERROR_MESSAGE;
+        try {
+            //split the input string with 1 to n pieces of spaces
+            List<WordFrequency> wordFrequencyList = new ArrayList<>();
+            for (String inputWord : inputSentence.split(SPACE_REGEX)) {
+                WordFrequency wordFrequency = new WordFrequency(inputWord, 1);
+                wordFrequencyList.add(wordFrequency);
             }
+
+            //sizing the same word
+            List<WordFrequency> uniqueWordFrequencyList = new ArrayList<>();
+            for (Map.Entry<String, List<WordFrequency>> entry : getWordFrequencyMap(wordFrequencyList).entrySet()) {
+                uniqueWordFrequencyList.add(new WordFrequency(entry.getKey(), entry.getValue().size()));
+            }
+            uniqueWordFrequencyList.sort((word1, word2) -> word2.getCount() - word1.getCount());
+
+            StringJoiner resultJoiner = new StringJoiner(NEW_LINE_DELIMITER);
+            for (WordFrequency word : uniqueWordFrequencyList) {
+                resultJoiner.add(word.getWord() + " " + word.getCount());
+            }
+            return resultJoiner.toString();
+        } catch (Exception exception) {
+            return CALCULATE_ERROR_MESSAGE;
         }
+
     }
 
     private Map<String, List<WordFrequency>> getWordFrequencyMap(List<WordFrequency> wordFrequencyList) {
