@@ -1,5 +1,5 @@
 1. Reformat code
-1. Remove unused imports
+1. Optimize imports
 1. Remove commented code
 1. Rename variables, functions & Classes
 1. Extract magic strings/number to constants
