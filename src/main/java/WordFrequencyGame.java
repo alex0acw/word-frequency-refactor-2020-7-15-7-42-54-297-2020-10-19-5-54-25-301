@@ -3,16 +3,14 @@ import java.util.*;
 public class WordFrequencyGame {
 
     private static final String SPACE_REGEX = "\\s+";
-    public static final String SINGLE_WORD_SUFFIX = " 1";
     public static final String NEW_LINE_DELIMITER = "\n";
-    public static final String CALCULATE_ERROR_MESSAGE = "Calculate Error";
 
-    public String getResult(String inputSentence) {
+    public String getResult(String inputSentence) throws CalculateErrorException {
         try {
             List<WordFrequency> uniqueWordFrequencyList = generateWordFrequencyList(inputSentence);
             return generateResultString(uniqueWordFrequencyList);
         } catch (Exception exception) {
-            return CALCULATE_ERROR_MESSAGE;
+            throw new CalculateErrorException();
         }
 
     }
