@@ -5,6 +5,7 @@
 1. Extract magic strings/number to constants
 1. Make immutable variables final
 1. Remove redundant variables
+1. Remove repeated logic
 1. Extract logic to methods
 1. Create exception class 
 1. Simplify code with APIs 
