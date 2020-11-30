@@ -13,29 +13,22 @@ public class WordFrequencyGame {
         } else {
             try {
                 //split the input string with 1 to n pieces of spaces
-                String[] inputWords = inputSentence.split(SPACE_REGEX);
-
                 List<WordFrequency> wordFrequencyList = new ArrayList<>();
-                for (String inputWord : inputWords) {
+                for (String inputWord : inputSentence.split(SPACE_REGEX)) {
                     WordFrequency wordFrequency = new WordFrequency(inputWord, 1);
                     wordFrequencyList.add(wordFrequency);
                 }
 
-                //get the map for the next step of sizing the same word
-                Map<String, List<WordFrequency>> wordFrequencyMap = getWordFrequencyMap(wordFrequencyList);
-
-                List<WordFrequency> wordFrequencyList1 = new ArrayList<>();
-                for (Map.Entry<String, List<WordFrequency>> entry : wordFrequencyMap.entrySet()) {
-                    WordFrequency wordFrequency = new WordFrequency(entry.getKey(), entry.getValue().size());
-                    wordFrequencyList1.add(wordFrequency);
+                //sizing the same word
+                List<WordFrequency> uniqueWordFrequencyList = new ArrayList<>();
+                for (Map.Entry<String, List<WordFrequency>> entry : getWordFrequencyMap(wordFrequencyList).entrySet()) {
+                    uniqueWordFrequencyList.add(new WordFrequency(entry.getKey(), entry.getValue().size()));
                 }
-                wordFrequencyList = wordFrequencyList1;
-                wordFrequencyList.sort((word1, word2) -> word2.getCount() - word1.getCount());
+                uniqueWordFrequencyList.sort((word1, word2) -> word2.getCount() - word1.getCount());
 
                 StringJoiner resultJoiner = new StringJoiner(NEW_LINE_DELIMITER);
-                for (WordFrequency word : wordFrequencyList) {
-                    String s = word.getWord() + " " + word.getCount();
-                    resultJoiner.add(s);
+                for (WordFrequency word : uniqueWordFrequencyList) {
+                    resultJoiner.add(word.getWord() + " " + word.getCount());
                 }
                 return resultJoiner.toString();
             } catch (Exception exception) {
