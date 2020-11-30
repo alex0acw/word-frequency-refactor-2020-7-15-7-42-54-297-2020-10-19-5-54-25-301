@@ -1,9 +1,12 @@
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class WordFrequencyGame {
 
     private static final String SPACE_REGEX = "\\s+";
-    public static final String NEW_LINE_DELIMITER = "\n";
+    private static final String NEW_LINE_DELIMITER = "\n";
+    private static final String WORD_FREQUENCY_ITEM_TEMPLATE = "%s %d";
 
     public String getResult(String inputSentence) throws CalculateErrorException {
         try {
@@ -12,45 +15,22 @@ public class WordFrequencyGame {
         } catch (Exception exception) {
             throw new CalculateErrorException();
         }
-
     }
 
     private List<WordFrequency> generateWordFrequencyList(String inputSentence) {
-        //split the input string with 1 to n pieces of spaces
-        List<WordFrequency> wordFrequencyList = new ArrayList<>();
-        for (String inputWord : inputSentence.split(SPACE_REGEX)) {
-            WordFrequency wordFrequency = new WordFrequency(inputWord, 1);
-            wordFrequencyList.add(wordFrequency);
-        }
-
-        //sizing the same word
-        List<WordFrequency> uniqueWordFrequencyList = new ArrayList<>();
-        for (Map.Entry<String, List<WordFrequency>> entry : getWordFrequencyMap(wordFrequencyList).entrySet()) {
-            uniqueWordFrequencyList.add(new WordFrequency(entry.getKey(), entry.getValue().size()));
-        }
-        uniqueWordFrequencyList.sort((word1, word2) -> word2.getCount() - word1.getCount());
-        return uniqueWordFrequencyList;
+        return Arrays.stream(inputSentence.split(SPACE_REGEX))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .map(stringLongEntry -> new WordFrequency(stringLongEntry.getKey(), Math.toIntExact(stringLongEntry.getValue())))
+                .sorted(Comparator.comparing(WordFrequency::getCount).reversed())
+                .collect(Collectors.toList());
     }
 
     private String generateResultString(List<WordFrequency> uniqueWordFrequencyList) {
-        StringJoiner resultJoiner = new StringJoiner(NEW_LINE_DELIMITER);
-        for (WordFrequency word : uniqueWordFrequencyList) {
-            resultJoiner.add(word.getWord() + " " + word.getCount());
-        }
-        return resultJoiner.toString();
+        return uniqueWordFrequencyList.stream()
+                .map(wordFrequency -> String.format(WORD_FREQUENCY_ITEM_TEMPLATE, wordFrequency.getWord(), wordFrequency.getCount()))
+                .collect(Collectors.joining(NEW_LINE_DELIMITER));
     }
 
-    private Map<String, List<WordFrequency>> getWordFrequencyMap(List<WordFrequency> wordFrequencyList) {
-        Map<String, List<WordFrequency>> wordFrequencyMap = new HashMap<>();
-        for (WordFrequency wordFrequency : wordFrequencyList) {
-            if (!wordFrequencyMap.containsKey(wordFrequency.getWord())) {
-                List<WordFrequency> wordFrequencies = new ArrayList<>();
-                wordFrequencies.add(wordFrequency);
-                wordFrequencyMap.put(wordFrequency.getWord(), wordFrequencies);
-            } else {
-                wordFrequencyMap.get(wordFrequency.getWord()).add(wordFrequency);
-            }
-        }
-        return wordFrequencyMap;
-    }
 }
